@@ -47,7 +47,7 @@ class SplashScreen2 extends StatelessWidget {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  print('Mulai Sekarang ditekan');
+                  debugPrint('Mulai Sekarang ditekan');
                 },
                 child: Container(
                   width: 248,
@@ -70,8 +70,8 @@ class SplashScreen2 extends StatelessWidget {
                       SizedBox(width: 10),
                       Image(
                         image: AssetImage('assets/arrows_1.png'),
-                        width: 22,
-                        height: 22,
+                        width: 28,
+                        height: 28,
                         color: Colors.white,
                       ),
                     ],

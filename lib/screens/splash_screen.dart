@@ -12,11 +12,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const SplashScreen2()),
-      );
+    Future.delayed(const Duration(seconds: 6), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SplashScreen2()),
+        );
+      }
     });
   }
 
@@ -37,7 +39,6 @@ class _SplashScreenState extends State<SplashScreen> {
               const Text(
                 'Pesan Hotel',
                 style: TextStyle(
-                  fontFamily: 'InclusiveSans',
                   fontSize: 30,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
