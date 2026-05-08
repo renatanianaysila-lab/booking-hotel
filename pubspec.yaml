@@ -39,6 +39,22 @@ flutter:
     - assets/mdi_location.png
     - assets/nav_2.png
     - assets/peta.png
+    - assets/Rectangle 11.png
+    - assets/Rectangle 12.png
+    - assets/Rectangle 13.png
+    - assets/Rectangle 14.png
+    - assets/Rectangle 15.png
+    - assets/Rectangle 16.png
+    - assets/Vector.png
+    - assets/Facilities.png
+    - assets/Group.png
+    - assets/heart.png
+    - assets/carbon_area.png
+    - assets/fluent-mdl2_breakfast.png
+    - assets/material-symbols_bed.png
+    - assets/mdi_bathroom.png
+    - assets/streamline_hotel-air-conditioner.png
+    - assets/tabler_wifi.png
 
   fonts:
     - family: InclusiveSans

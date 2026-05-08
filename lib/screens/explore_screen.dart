@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'favorite_screen.dart';
 import 'profile_screen.dart';
+import 'detail_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -11,170 +12,179 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
+  int _currentIndex = 1;
+  String _selectedCity = 'Semua';
   final TextEditingController _searchController = TextEditingController();
-  int _selectedCategoryIndex = 0;
-  int _selectedNavIndex = 1;
+  String _searchQuery = '';
 
-  final List<String> _categories = [
-    'Semua',
-    'Jakarta',
-    'Bali',
-    'Surabaya',
-    'Bandung',
-    'Yogyakarta',
-    'Makassar',
-    'Medan',
+  final List<String> _cities = [
+    'Semua', 'Jakarta', 'Bali', 'Surabaya', 'Bandung', 'Yogyakarta'
   ];
 
-  final List<Map<String, dynamic>> _allHotels = [
+  final List<Map<String, dynamic>> _hotels = [
     {
       'name': 'Hotel Majapahit',
       'location': 'Surabaya, Jawa Timur',
-      'price': 'Rp 850.000',
-      'rating': 4.8,
-      'image': 'assets/bumimajapahit.png',
-      'category': 'Surabaya',
-      'tag': 'Rekomendasi',
+      'city': 'Surabaya',
+      'price': 'Rp850.000',
+      'rating': '4.8',
+      'reviews': '107',
+      'image': 'assets/Rectangle 11.png',
+      'badge': 'Rekomendasi',
+      'badgeColor': Color(0xFF4CAF50),
+      'discount': 'Diskon 20%',
+      'beds': 2,
+      'bathrooms': 1,
+      'area': 2000,
+      'description':
+          'Hotel bersejarah di jantung Surabaya dengan kolam renang mewah, restoran, dan fasilitas lengkap. Dekat dengan pusat perbelanjaan dan objek wisata kota.',
     },
     {
       'name': 'Bumi Surabaya City Resort',
       'location': 'Surabaya, Jawa Timur',
-      'price': 'Rp 1.200.000',
-      'rating': 4.9,
-      'image': 'assets/bumisurabaaya.png',
-      'category': 'Surabaya',
-      'tag': 'Populer',
+      'city': 'Surabaya',
+      'price': 'Rp1.200.000',
+      'rating': '4.9',
+      'reviews': '213',
+      'image': 'assets/Rectangle 12.png',
+      'badge': 'Populer',
+      'badgeColor': Color(0xFF2196F3),
+      'discount': 'Diskon 15%',
+      'beds': 2,
+      'bathrooms': 2,
+      'area': 2500,
+      'description':
+          'Resort mewah di pusat kota Surabaya dengan pemandangan indah, fasilitas spa, kolam renang infinity, dan restoran rooftop.',
     },
     {
       'name': 'Ciputra World Hotel',
       'location': 'Surabaya, Jawa Timur',
-      'price': 'Rp 750.000',
-      'rating': 4.6,
-      'image': 'assets/ciputra.png',
-      'category': 'Surabaya',
-      'tag': '',
+      'city': 'Surabaya',
+      'price': 'Rp750.000',
+      'rating': '4.6',
+      'reviews': '89',
+      'image': 'assets/Rectangle 13.png',
+      'badge': null,
+      'badgeColor': null,
+      'discount': 'Diskon 10%',
+      'beds': 1,
+      'bathrooms': 1,
+      'area': 1800,
+      'description':
+          'Hotel modern terintegrasi dengan pusat perbelanjaan Ciputra World. Lokasi strategis dan akses mudah ke berbagai fasilitas hiburan.',
     },
     {
       'name': 'The Westin Jakarta',
       'location': 'Jakarta Selatan, DKI Jakarta',
-      'price': 'Rp 2.100.000',
-      'rating': 4.9,
-      'image': 'assets/bumimajapahit.png',
-      'category': 'Jakarta',
-      'tag': 'Mewah',
+      'city': 'Jakarta',
+      'price': 'Rp1.500.000',
+      'rating': '4.9',
+      'reviews': '312',
+      'image': 'assets/Rectangle 14.png',
+      'badge': 'Mewah',
+      'badgeColor': Color(0xFF9C27B0),
+      'discount': 'Diskon 10%',
+      'beds': 2,
+      'bathrooms': 2,
+      'area': 3200,
+      'description':
+          'Hotel bintang 5 di jantung Jakarta Selatan dengan fasilitas world-class, spa eksklusif, dan pemandangan kota yang memukau.',
     },
     {
-      'name': 'Grand Mercure Bandung',
-      'location': 'Bandung, Jawa Barat',
-      'price': 'Rp 980.000',
-      'rating': 4.7,
-      'image': 'assets/bumisurabaaya.png',
-      'category': 'Bandung',
-      'tag': '',
+      'name': 'The Trans Resort Bali',
+      'location': 'Seminyak, Bali',
+      'city': 'Bali',
+      'price': 'Rp2.000.000',
+      'rating': '4.8',
+      'reviews': '428',
+      'image': 'assets/Rectangle 15.png',
+      'badge': 'Rekomendasi',
+      'badgeColor': Color(0xFF4CAF50),
+      'discount': 'Diskon 25%',
+      'beds': 2,
+      'bathrooms': 2,
+      'area': 4500,
+      'description':
+          'Resort mewah tepi pantai Seminyak dengan kolam renang tak terbatas, restoran tepi pantai, dan pemandangan matahari terbenam yang memukau.',
     },
     {
-      'name': 'Padma Resort Bali',
-      'location': 'Legian, Bali',
-      'price': 'Rp 3.500.000',
-      'rating': 5.0,
-      'image': 'assets/ciputra.png',
-      'category': 'Bali',
-      'tag': 'Terbaik',
-    },
-    {
-      'name': 'Tentrem Hotel',
-      'location': 'Yogyakarta',
-      'price': 'Rp 1.100.000',
-      'rating': 4.8,
-      'image': 'assets/bumimajapahit.png',
-      'category': 'Yogyakarta',
-      'tag': '',
-    },
-    {
-      'name': 'Four Points by Sheraton',
-      'location': 'Makassar, Sulawesi Selatan',
-      'price': 'Rp 890.000',
-      'rating': 4.6,
-      'image': 'assets/bumisurabaaya.png',
-      'category': 'Makassar',
-      'tag': '',
-    },
-    {
-      'name': 'Harper Perintis',
-      'location': 'Medan, Sumatera Utara',
-      'price': 'Rp 720.000',
-      'rating': 4.5,
-      'image': 'assets/ciputra.png',
-      'category': 'Medan',
-      'tag': '',
+      'name': 'Padma Hotel Bandung',
+      'location': 'Dago, Bandung',
+      'city': 'Bandung',
+      'price': 'Rp900.000',
+      'rating': '4.7',
+      'reviews': '156',
+      'image': 'assets/Rectangle 16.png',
+      'badge': 'Populer',
+      'badgeColor': Color(0xFF2196F3),
+      'discount': 'Diskon 12%',
+      'beds': 1,
+      'bathrooms': 1,
+      'area': 2200,
+      'description':
+          'Hotel butik di kawasan Dago Bandung dengan nuansa tropis dan pemandangan pegunungan. Sempurna untuk liburan keluarga.',
     },
   ];
 
   List<Map<String, dynamic>> get _filteredHotels {
-    final category = _categories[_selectedCategoryIndex];
-    String query = _searchController.text.toLowerCase();
-
-    return _allHotels.where((hotel) {
-      final matchesCategory =
-          category == 'Semua' || hotel['category'] == category;
-      final matchesSearch = query.isEmpty ||
-          hotel['name'].toString().toLowerCase().contains(query) ||
-          hotel['location'].toString().toLowerCase().contains(query);
-      return matchesCategory && matchesSearch;
+    return _hotels.where((h) {
+      final matchCity =
+          _selectedCity == 'Semua' || h['city'] == _selectedCity;
+      final matchSearch = _searchQuery.isEmpty ||
+          (h['name'] as String)
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
+          (h['location'] as String)
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase());
+      return matchCity && matchSearch;
     }).toList();
   }
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final filtered = _filteredHotels;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
+            // ── Header ──────────────────────────────────────
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
                     'Jelajahi Hotel',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
                       fontFamily: 'InclusiveSans',
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   const Text(
                     'Temukan hotel impianmu di seluruh Indonesia',
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: 'InclusiveSans',
                       color: Colors.grey,
+                      fontFamily: 'InclusiveSans',
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Search Bar
+                  const SizedBox(height: 14),
+                  // Search bar
                   Container(
-                    height: 48,
+                    height: 46,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF5F5F5),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextField(
                       controller: _searchController,
-                      onChanged: (_) => setState(() {}),
+                      onChanged: (v) => setState(() => _searchQuery = v),
                       style: const TextStyle(
                         fontFamily: 'InclusiveSans',
                         fontSize: 14,
@@ -182,24 +192,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       decoration: InputDecoration(
                         hintText: 'Cari hotel atau kota...',
                         hintStyle: const TextStyle(
-                          fontFamily: 'InclusiveSans',
                           color: Colors.grey,
+                          fontFamily: 'InclusiveSans',
                           fontSize: 14,
                         ),
-                        prefixIcon: Image.asset(
-                          'assets/cari.png',
-                          width: 20,
-                          height: 20,
-                          errorBuilder: (_, __, ___) => const Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                        ),
+                        prefixIcon: const Icon(Icons.search,
+                            color: Colors.grey, size: 20),
+                        suffixIcon: _searchQuery.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(Icons.close,
+                                    color: Colors.grey, size: 18),
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                              )
+                            : null,
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14,
-                          horizontal: 12,
-                        ),
+                        contentPadding:
+                            const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
@@ -207,35 +218,37 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ),
 
-            // Category Filter
+            const SizedBox(height: 14),
+
+            // ── City Filter ─────────────────────────────────
             SizedBox(
-              height: 40,
-              child: ListView.builder(
+              height: 36,
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: _categories.length,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: _cities.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
-                  final isSelected = _selectedCategoryIndex == index;
+                  final city = _cities[index];
+                  final isSelected = _selectedCity == city;
                   return GestureDetector(
-                    onTap: () =>
-                        setState(() => _selectedCategoryIndex = index),
+                    onTap: () => setState(() => _selectedCity = city),
                     child: Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color(0xFFF1510C)
                             : const Color(0xFFF5F5F5),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      alignment: Alignment.center,
                       child: Text(
-                        _categories[index],
+                        city,
                         style: TextStyle(
-                          fontFamily: 'InclusiveSans',
                           fontSize: 13,
+                          fontFamily: 'InclusiveSans',
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : Colors.black54,
+                          color: isSelected ? Colors.white : Colors.black87,
                         ),
                       ),
                     ),
@@ -244,68 +257,53 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
 
-            // Map Banner
+            // ── Map Banner ──────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                height: 120,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  color: const Color(0xFFFFF0EB),
-                ),
-                clipBehavior: Clip.hardEdge,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
                 child: Stack(
                   children: [
-                    Positioned.fill(
+                    SizedBox(
+                      height: 100,
+                      width: double.infinity,
                       child: Image.asset(
                         'assets/peta.png',
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => Container(
-                          color: const Color(0xFFFFF0EB),
+                          color: const Color(0xFFE8E8E8),
                           child: const Center(
-                            child: Icon(
-                              Icons.map_outlined,
-                              size: 50,
-                              color: Color(0xFFF1510C),
-                            ),
+                            child: Icon(Icons.map,
+                                size: 40, color: Colors.grey),
                           ),
                         ),
                       ),
                     ),
                     Positioned(
-                      left: 16,
-                      bottom: 16,
+                      bottom: 10,
+                      left: 12,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
+                            horizontal: 12, vertical: 7),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF1510C),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Image.asset(
-                              'assets/mdi_location.png',
-                              width: 16,
-                              height: 16,
-                              color: Colors.white,
-                              errorBuilder: (_, __, ___) => const Icon(
-                                Icons.location_on,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            const Text(
+                            Icon(Icons.location_on,
+                                color: Colors.white, size: 14),
+                            SizedBox(width: 4),
+                            Text(
                               'Lihat di Peta',
                               style: TextStyle(
-                                fontFamily: 'InclusiveSans',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
                                 color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'InclusiveSans',
                               ),
                             ),
                           ],
@@ -317,20 +315,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
-            // Hotel List
+            // ── Hotel Count ─────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '${_filteredHotels.length} Hotel Ditemukan',
+                    '${filtered.length} Hotel Ditemukan',
                     style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
                       fontFamily: 'InclusiveSans',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
@@ -340,23 +337,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
             const SizedBox(height: 10),
 
+            // ── Hotel List ──────────────────────────────────
             Expanded(
-              child: _filteredHotels.isEmpty
+              child: filtered.isEmpty
                   ? const Center(
                       child: Text(
-                        'Tidak ada hotel ditemukan',
+                        'Hotel tidak ditemukan',
                         style: TextStyle(
                           fontFamily: 'InclusiveSans',
                           color: Colors.grey,
                         ),
                       ),
                     )
-                  : ListView.builder(
+                  : ListView.separated(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: _filteredHotels.length,
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(height: 12),
                       itemBuilder: (context, index) {
-                        final hotel = _filteredHotels[index];
-                        return _buildHotelCard(hotel);
+                        return _buildHotelCard(filtered[index]);
                       },
                     ),
             ),
@@ -368,162 +367,169 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 
   Widget _buildHotelCard(Map<String, dynamic> hotel) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.07),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DetailScreen(hotel: hotel),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Image
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(14),
-              bottomLeft: Radius.circular(14),
+        );
+      },
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.07),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
-            child: Image.asset(
-              hotel['image'],
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
+          ],
+        ),
+        child: Row(
+          children: [
+            // Image
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(14),
+                bottomLeft: Radius.circular(14),
+              ),
+              child: SizedBox(
                 width: 100,
                 height: 100,
-                color: const Color(0xFFFFF0EB),
-                child: const Icon(
-                  Icons.hotel,
-                  color: Color(0xFFF1510C),
-                  size: 40,
+                child: Image.asset(
+                  hotel['image'] as String,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    color: const Color(0xFFE8E8E8),
+                    child:
+                        const Icon(Icons.hotel, size: 30, color: Colors.grey),
+                  ),
                 ),
               ),
             ),
-          ),
-          // Info
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (hotel['tag'] != null && hotel['tag'].isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 4),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF0EB),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        hotel['tag'],
-                        style: const TextStyle(
-                          fontFamily: 'InclusiveSans',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFF1510C),
-                        ),
-                      ),
-                    ),
-                  Text(
-                    hotel['name'],
-                    style: const TextStyle(
-                      fontFamily: 'InclusiveSans',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/lokasi.png',
-                        width: 12,
-                        height: 12,
-                        errorBuilder: (_, __, ___) => const Icon(
-                          Icons.location_on,
-                          size: 12,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          hotel['location'],
+            // Info
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (hotel['badge'] != null)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 2),
+                            margin: const EdgeInsets.only(bottom: 4),
+                            decoration: BoxDecoration(
+                              color: (hotel['badgeColor'] as Color)
+                                  .withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              hotel['badge'] as String,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontFamily: 'InclusiveSans',
+                                fontWeight: FontWeight.w600,
+                                color: hotel['badgeColor'] as Color,
+                              ),
+                            ),
+                          ),
+                        Text(
+                          hotel['name'] as String,
                           style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
                             fontFamily: 'InclusiveSans',
-                            fontSize: 11,
-                            color: Colors.grey,
+                            color: Colors.black,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        hotel['price'],
-                        style: const TextStyle(
-                          fontFamily: 'InclusiveSans',
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFF1510C),
+                        Row(
+                          children: [
+                            const Icon(Icons.location_on,
+                                size: 11, color: Colors.grey),
+                            const SizedBox(width: 2),
+                            Expanded(
+                              child: Text(
+                                hotel['location'] as String,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey,
+                                  fontFamily: 'InclusiveSans',
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            size: 13,
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          hotel['price'] as String,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'InclusiveSans',
                             color: Color(0xFFF1510C),
                           ),
-                          const SizedBox(width: 2),
-                          Text(
-                            hotel['rating'].toString(),
-                            style: const TextStyle(
-                              fontFamily: 'InclusiveSans',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        ),
+                        const Spacer(),
+                        const Icon(Icons.star,
+                            color: Color(0xFFFFC107), size: 13),
+                        const SizedBox(width: 2),
+                        Text(
+                          '${hotel['rating']}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontFamily: 'InclusiveSans',
+                            color: Colors.black87,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildBottomNav() {
     final items = [
-      {'icon': 'assets/home.png',         'label': 'Beranda',  'fallback': Icons.home},
-      {'icon': 'assets/mdi_location.png', 'label': 'Jelajahi', 'fallback': Icons.explore_outlined},
-      {'icon': 'assets/heart.png',        'label': 'Favorit',  'fallback': Icons.favorite_border},
-      {'icon': 'assets/Group.png',        'label': 'Profil',   'fallback': Icons.person_outline},
+      {'icon': 'assets/home.png', 'label': 'Beranda', 'fallback': Icons.home},
+      {
+        'icon': 'assets/mdi_location.png',
+        'label': 'Jelajahi',
+        'fallback': Icons.explore_outlined
+      },
+      {
+        'icon': 'assets/heart.png',
+        'label': 'Favorit',
+        'fallback': Icons.favorite_border
+      },
+      {
+        'icon': 'assets/Group.png',
+        'label': 'Profil',
+        'fallback': Icons.person_outline
+      },
     ];
 
     return Container(
-      height: 70,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -534,59 +540,71 @@ class _ExploreScreenState extends State<ExploreScreen> {
           ),
         ],
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (index) {
-          final isSelected = _selectedNavIndex == index;
-          return GestureDetector(
-            onTap: () {
-              if (index == 0) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const HomeScreen()));
-              } else if (index == 2) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const FavoriteScreen()));
-              } else if (index == 3) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const ProfileScreen()));
-              } else {
-                setState(() => _selectedNavIndex = index);
-              }
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  items[index]['icon'] as String,
-                  width: 24,
-                  height: 24,
-                  color: isSelected
-                      ? const Color(0xFFF1510C)
-                      : Colors.grey,
-                  errorBuilder: (_, __, ___) => Icon(
-                    items[index]['fallback'] as IconData,
-                    size: 24,
-                    color: isSelected
-                        ? const Color(0xFFF1510C)
-                        : Colors.grey,
-                  ),
+      child: SafeArea(
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(items.length, (index) {
+              final item = items[index];
+              final isActive = _currentIndex == index;
+              return GestureDetector(
+                onTap: () {
+                  if (index == 0) {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (_) => const HomeScreen()));
+                  } else if (index == 1) {
+                    setState(() => _currentIndex = index);
+                  } else if (index == 2) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const FavoriteScreen()));
+                  } else if (index == 3) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const ProfileScreen()));
+                  }
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      item['icon'] as String,
+                      width: 24,
+                      height: 24,
+                      color: isActive
+                          ? const Color(0xFFF1510C)
+                          : Colors.grey,
+                      errorBuilder: (_, __, ___) => Icon(
+                        item['fallback'] as IconData,
+                        size: 24,
+                        color: isActive
+                            ? const Color(0xFFF1510C)
+                            : Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item['label'] as String,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontFamily: 'InclusiveSans',
+                        color: isActive
+                            ? const Color(0xFFF1510C)
+                            : Colors.grey,
+                        fontWeight: isActive
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  items[index]['label'] as String,
-                  style: TextStyle(
-                    fontFamily: 'InclusiveSans',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                    color: isSelected
-                        ? const Color(0xFFF1510C)
-                        : Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
+              );
+            }),
+          ),
+        ),
       ),
     );
   }
