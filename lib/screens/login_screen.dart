@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -327,7 +328,10 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    _showSnackbar('Login berhasil! Selamat datang kembali.');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   void _handleSocialLogin(String provider) {

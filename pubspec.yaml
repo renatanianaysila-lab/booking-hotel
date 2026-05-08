@@ -21,22 +21,24 @@ flutter:
   uses-material-design: true
 
   assets:
-    assets:
-  - assets/Logo.png
-  - assets/Ellipse_1.png
-  - assets/arrows_1.png
-  - assets/google.png
-  - assets/facebook.png
-  - assets/apple.png
-  - assets/bumimajapahit.png
-  - assets/bumisurabaaya.png
-  - assets/cari.png
-  - assets/ciputra.png
-  - assets/lokasi.png
-  - assets/nav_awal.png
-  - assets/notif.png
-  - assets/other.png
-
+    - assets/Logo.png
+    - assets/Ellipse_1.png
+    - assets/arrows_1.png
+    - assets/google.png
+    - assets/facebook.png
+    - assets/apple.png
+    - assets/bumimajapahit.png
+    - assets/bumisurabaaya.png
+    - assets/cari.png
+    - assets/ciputra.png
+    - assets/lokasi.png
+    - assets/nav_awal.png
+    - assets/notif.png
+    - assets/other.png
+    - assets/home.png
+    - assets/mdi_location.png
+    - assets/nav_2.png
+    - assets/peta.png
 
   fonts:
     - family: InclusiveSans
