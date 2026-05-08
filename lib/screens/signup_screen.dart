@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'signup_screen.dart';
+import 'login_screen.dart';
+// TODO: import 'verification_screen.dart'; // Uncomment saat sudah dibuat
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _agreeToTerms = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -30,22 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Logo
-              Center(
-                child: Image.asset(
-                  'assets/Logo.png',
-                  height: 80,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.login, size: 80, color: Color(0xFFF1510C));
-                  },
-                ),
-              ),
-              const SizedBox(height: 32),
-
               // Title
               const Center(
                 child: Text(
-                  'Masuk',
+                  'Buat Akun',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
@@ -56,15 +48,55 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  'Halo! Selamat datang kembali',
+                  'Isi data di bawah, atau daftar\ndengan akun media sosial',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.grey[600],
                     fontFamily: 'InclusiveSans',
                   ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 36),
+
+              // Nama Field
+              const Text(
+                'Nama',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'InclusiveSans',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _nameController,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  hintText: 'Nama',
+                  hintStyle: TextStyle(
+                    fontFamily: 'InclusiveSans',
+                    color: Colors.grey[400],
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xFFFFF3EE),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFF1510C), width: 2),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                ),
+                style: const TextStyle(fontFamily: 'InclusiveSans'),
+              ),
+              const SizedBox(height: 20),
 
               // Email Field
               const Text(
@@ -105,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Password Field
+              // Kata Sandi Field
               const Text(
                 'Kata Sandi',
                 style: TextStyle(
@@ -153,33 +185,63 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 style: const TextStyle(fontFamily: 'InclusiveSans'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
 
-              // Forgot Password
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    _showSnackbar('Fitur lupa kata sandi akan segera hadir');
-                  },
-                  child: const Text(
-                    'Lupa Kata Sandi ?',
-                    style: TextStyle(
-                      color: Color(0xFFF1510C),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'InclusiveSans',
+              // Checkbox Syarat & Ketentuan
+              Row(
+                children: [
+                  Checkbox(
+                    value: _agreeToTerms,
+                    onChanged: (value) {
+                      setState(() {
+                        _agreeToTerms = value ?? false;
+                      });
+                    },
+                    activeColor: const Color(0xFFF1510C),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[700],
+                          fontFamily: 'InclusiveSans',
+                        ),
+                        children: [
+                          const TextSpan(text: 'Setuju dengan '),
+                          WidgetSpan(
+                            child: GestureDetector(
+                              onTap: () {
+                                _showSnackbar('Syarat & Ketentuan akan segera hadir');
+                              },
+                              child: const Text(
+                                'Syarat & Ketentuan',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFFF1510C),
+                                  fontFamily: 'InclusiveSans',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
 
-              // Login Button
+              // Daftar Button
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _handleLogin,
+                  onPressed: _handleRegister,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF1510C),
                     foregroundColor: Colors.white,
@@ -189,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     elevation: 0,
                   ),
                   child: const Text(
-                    'Masuk',
+                    'Daftar',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -233,12 +295,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Register Link
+              // Login Link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Belum punya akun ?',
+                    'Sudah punya akun ?',
                     style: TextStyle(
                       color: Colors.grey[600],
                       fontFamily: 'InclusiveSans',
@@ -246,15 +308,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpScreen(),
-                        ),
-                      );
+                      Navigator.pop(context);
                     },
                     child: const Text(
-                      'Daftar',
+                      'Masuk',
                       style: TextStyle(
                         color: Color(0xFFF1510C),
                         fontWeight: FontWeight.bold,
@@ -274,7 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSocialButton(String assetPath, String label) {
     return InkWell(
       onTap: () {
-        _handleSocialLogin(label);
+        _showSnackbar('Daftar dengan $label akan segera hadir');
       },
       borderRadius: BorderRadius.circular(30),
       child: Container(
@@ -308,17 +365,18 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleLogin() {
+  void _handleRegister() {
+    String name = _nameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    if (email.isEmpty) {
-      _showSnackbar('Email tidak boleh kosong');
+    if (name.isEmpty) {
+      _showSnackbar('Nama tidak boleh kosong');
       return;
     }
 
-    if (password.isEmpty) {
-      _showSnackbar('Kata sandi tidak boleh kosong');
+    if (email.isEmpty) {
+      _showSnackbar('Email tidak boleh kosong');
       return;
     }
 
@@ -327,11 +385,27 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    _showSnackbar('Login berhasil! Selamat datang kembali.');
-  }
+    if (password.isEmpty) {
+      _showSnackbar('Kata sandi tidak boleh kosong');
+      return;
+    }
 
-  void _handleSocialLogin(String provider) {
-    _showSnackbar('Login dengan $provider akan segera hadir');
+    if (password.length < 6) {
+      _showSnackbar('Kata sandi minimal 6 karakter');
+      return;
+    }
+
+    if (!_agreeToTerms) {
+      _showSnackbar('Harap setujui Syarat & Ketentuan terlebih dahulu');
+      return;
+    }
+
+    // TODO: Navigasi ke VerificationScreen saat sudah dibuat
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const VerificationScreen()),
+    // );
+    _showSnackbar('Kode verifikasi telah dikirim ke $email');
   }
 
   void _showSnackbar(String message) {

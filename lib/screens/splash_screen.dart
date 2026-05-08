@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'splash_screen2.dart';
+import 'welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,11 +12,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 6), () {
+    Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const SplashScreen2()),
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
         );
       }
     });
@@ -34,6 +34,22 @@ class _SplashScreenState extends State<SplashScreen> {
               Image.asset(
                 'assets/Logo.png',
                 width: 120,
+                height: 120,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.hotel,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 24),
               const Text(
@@ -42,6 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   fontSize: 30,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
+                  fontFamily: 'InclusiveSans', // ✅ Konsisten
                 ),
               ),
             ],
