@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 120,
                     height: 120,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -53,12 +53,12 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 24),
               const Text(
-                'Pesan Hotel',
+                'BookInn',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
-                  fontFamily: 'InclusiveSans', // ✅ Konsisten
+                  fontFamily: 'InclusiveSans', 
                 ),
               ),
             ],

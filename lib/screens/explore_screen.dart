@@ -150,7 +150,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── Header ──────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: Column(
@@ -175,7 +174,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  // Search bar
                   Container(
                     height: 46,
                     decoration: BoxDecoration(
@@ -220,7 +218,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
             const SizedBox(height: 14),
 
-            // ── City Filter ─────────────────────────────────
             SizedBox(
               height: 36,
               child: ListView.separated(
@@ -259,7 +256,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
             const SizedBox(height: 14),
 
-            // ── Map Banner ──────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: ClipRRect(
@@ -317,7 +313,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
             const SizedBox(height: 14),
 
-            // ── Hotel Count ─────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -337,7 +332,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
             const SizedBox(height: 10),
 
-            // ── Hotel List ──────────────────────────────────
             Expanded(
               child: filtered.isEmpty
                   ? const Center(
@@ -383,7 +377,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.07),
+              color: Colors.black.withValues(alpha: 0.07),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -391,7 +385,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
         child: Row(
           children: [
-            // Image
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(14),
@@ -411,7 +404,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
               ),
             ),
-            // Info
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -429,7 +421,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             margin: const EdgeInsets.only(bottom: 4),
                             decoration: BoxDecoration(
                               color: (hotel['badgeColor'] as Color)
-                                  .withOpacity(0.15),
+                                  .withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -534,7 +526,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),

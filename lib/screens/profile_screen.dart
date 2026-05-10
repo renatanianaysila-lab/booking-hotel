@@ -30,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Header orange
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
@@ -53,7 +52,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // Avatar
                     Container(
                       width: 88,
                       height: 88,
@@ -94,12 +92,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Stats
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 24, vertical: 12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -138,7 +135,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               const SizedBox(height: 24),
 
-              // Info Akun
               _buildSectionTitle('Informasi Akun'),
               _buildInfoTile(Icons.person_outline, 'Nama', _user['name']),
               _buildInfoTile(Icons.email_outlined, 'Email', _user['email']),
@@ -146,7 +142,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               const SizedBox(height: 16),
 
-              // Pengaturan
               _buildSectionTitle('Pengaturan'),
               _buildMenuTile(Icons.notifications_outlined, 'Notifikasi'),
               _buildMenuTile(Icons.lock_outline, 'Ubah Kata Sandi'),
@@ -156,7 +151,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
               const SizedBox(height: 16),
 
-              // Logout
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
@@ -191,10 +185,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              // TODO: navigasi ke LoginScreen setelah logout
-                              // Navigator.pushAndRemoveUntil(context,
-                              //   MaterialPageRoute(builder: (_) => const LoginScreen()),
-                              //   (route) => false);
                             },
                             child: const Text(
                               'Keluar',
@@ -340,7 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
