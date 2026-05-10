@@ -10,21 +10,19 @@ class WriteReviewScreen extends StatefulWidget {
 class _WriteReviewScreenState extends State<WriteReviewScreen> {
   double _rating = 4;
 
-  final TextEditingController _reviewController =
-      TextEditingController();
+  final TextEditingController _reviewController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
         decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -46,7 +44,6 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                   backgroundColor: Color(0xFFF1510C),
                 ),
               );
-
               Navigator.pop(context);
             },
             child: const Text(
@@ -61,7 +58,6 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
           ),
         ),
       ),
-
       body: SafeArea(
         child: Column(
           children: [
@@ -72,11 +68,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                   height: 240,
                   width: double.infinity,
                   child: Image.asset(
-                    'assets/Rectangle 11.png',
+                    'assets/Rectangle_11.png',
                     fit: BoxFit.cover,
                   ),
                 ),
-
                 Positioned(
                   top: 16,
                   left: 16,
@@ -89,14 +84,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.arrow_back_ios_new,
-                        size: 18,
-                      ),
+                      child: const Icon(Icons.arrow_back_ios_new, size: 18),
                     ),
                   ),
                 ),
-
                 Positioned(
                   top: 16,
                   right: 16,
@@ -107,15 +98,11 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      size: 18,
-                    ),
+                    child: const Icon(Icons.favorite_border, size: 18),
                   ),
                 ),
               ],
             ),
-
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -129,7 +116,6 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // HEADER
                     Row(
                       children: [
                         Container(
@@ -150,29 +136,16 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                             ),
                           ),
                         ),
-
                         const Spacer(),
-
-                        const Icon(
-                          Icons.star,
-                          size: 16,
-                          color: Colors.amber,
-                        ),
-
+                        const Icon(Icons.star, size: 16, color: Colors.amber),
                         const SizedBox(width: 4),
-
                         const Text(
                           '4.8 (107 ulasan)',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 14),
-
                     const Text(
                       'Hotel Majapahit',
                       style: TextStyle(
@@ -181,9 +154,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         fontFamily: 'InclusiveSans',
                       ),
                     ),
-
                     const SizedBox(height: 4),
-
                     const Text(
                       'Surabaya Pusat',
                       style: TextStyle(
@@ -192,27 +163,17 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         fontFamily: 'InclusiveSans',
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     Divider(color: Colors.grey.shade300),
-
                     const SizedBox(height: 18),
-
                     const Text(
                       'Penilaian keseluruhan produk ini',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
-
                     const SizedBox(height: 16),
-
                     // STAR RATING
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         5,
                         (index) => IconButton(
@@ -231,9 +192,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     const Text(
                       'Tulis ulasan lengkap',
                       style: TextStyle(
@@ -242,9 +201,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         fontFamily: 'InclusiveSans',
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
                     TextField(
                       controller: _reviewController,
                       maxLines: 5,
@@ -253,22 +210,16 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                         filled: true,
                         fillColor: const Color(0xFFFFF5F1),
                         border: OutlineInputBorder(
-                          borderRadius:
-                              BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
                     Row(
                       children: const [
-                        Icon(
-                          Icons.image_outlined,
-                          color: Color(0xFFF1510C),
-                          size: 18,
-                        ),
+                        Icon(Icons.image_outlined,
+                            color: Color(0xFFF1510C), size: 18),
                         SizedBox(width: 6),
                         Text(
                           'tambah foto',

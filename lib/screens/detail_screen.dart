@@ -48,7 +48,6 @@ class _DetailScreenState extends State<DetailScreen>
           SingleChildScrollView(
             child: Column(
               children: [
-                // ── Hero Image ──────────────────────────────────────
                 Stack(
                   children: [
                     SizedBox(
@@ -75,14 +74,13 @@ class _DetailScreenState extends State<DetailScreen>
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Colors.black.withOpacity(0.4),
+                              Colors.black.withValues(alpha: 0.4),
                               Colors.transparent,
                             ],
                           ),
                         ),
                       ),
                     ),
-                    // Back button
                     Positioned(
                       top: 44,
                       left: 16,
@@ -96,7 +94,7 @@ class _DetailScreenState extends State<DetailScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
+                                color: Colors.black.withValues(alpha: 0.15),
                                 blurRadius: 6,
                               ),
                             ],
@@ -106,7 +104,6 @@ class _DetailScreenState extends State<DetailScreen>
                         ),
                       ),
                     ),
-                    // Favorite button
                     Positioned(
                       top: 44,
                       right: 16,
@@ -121,7 +118,7 @@ class _DetailScreenState extends State<DetailScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.15),
+                                color: Colors.black.withValues(alpha: 0.15),
                                 blurRadius: 6,
                               ),
                             ],
@@ -141,7 +138,6 @@ class _DetailScreenState extends State<DetailScreen>
                   ],
                 ),
 
-                // ── Thumbnail Gallery ────────────────────────────────
                 Container(
                   color: Colors.white,
                   padding:
@@ -188,13 +184,11 @@ class _DetailScreenState extends State<DetailScreen>
                   ),
                 ),
 
-                // ── Hotel Info ──────────────────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Diskon + Rating
                       Row(
                         children: [
                           Container(
@@ -230,7 +224,6 @@ class _DetailScreenState extends State<DetailScreen>
                       ),
                       const SizedBox(height: 8),
 
-                      // Name + Vector icon
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -272,7 +265,6 @@ class _DetailScreenState extends State<DetailScreen>
                         ],
                       ),
 
-                      // Location
                       Row(
                         children: [
                           const Icon(Icons.location_on,
@@ -291,7 +283,6 @@ class _DetailScreenState extends State<DetailScreen>
 
                       const SizedBox(height: 12),
 
-                      // ── Tab Bar ──────────────────────────────────
                       TabBar(
                         controller: _tabController,
                         labelColor: const Color(0xFFF1510C),
@@ -317,7 +308,6 @@ class _DetailScreenState extends State<DetailScreen>
 
                       const SizedBox(height: 16),
 
-                      // ── Tab Content ──────────────────────────────
                       AnimatedBuilder(
                         animation: _tabController,
                         builder: (context, _) {
@@ -342,7 +332,6 @@ class _DetailScreenState extends State<DetailScreen>
             ),
           ),
 
-          // ── Bottom Bar ──────────────────────────────────────────
           Positioned(
             bottom: 0,
             left: 0,
@@ -353,7 +342,7 @@ class _DetailScreenState extends State<DetailScreen>
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 12,
                     offset: const Offset(0, -3),
                   ),
@@ -453,9 +442,7 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  // ── Tab: Tentang ──────────────────────────────────────────────────
   Widget _buildTentang(Map<String, dynamic> hotel) {
-    // Setiap fasilitas pakai icon asset yang sesuai
     final facilities = [
       {
         'icon': 'assets/material-symbols_bed.png',
@@ -492,7 +479,6 @@ class _DetailScreenState extends State<DetailScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Fasilitas grid 3 kolom
         GridView.count(
           crossAxisCount: 3,
           shrinkWrap: true,
@@ -505,7 +491,6 @@ class _DetailScreenState extends State<DetailScreen>
 
         const SizedBox(height: 20),
 
-        // Deskripsi
         const Text(
           'Deskripsi',
           style: TextStyle(
@@ -568,7 +553,6 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  // ── Tab: Galeri ───────────────────────────────────────────────────
   Widget _buildGaleri() {
     return GridView.count(
       crossAxisCount: 2,
@@ -593,216 +577,201 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
-  // ── Tab: Ulasan ───────────────────────────────────────────────────
- Widget _buildUlasan() {
-  final reviews = [
-    {
-      'name': 'John Dey',
-      'rating': 5,
-      'comment': 'Kamar bersih dan nyaman, pelayanan sangat baik!',
-      'date': '10 bulan lalu',
-    },
-    {
-      'name': 'Budi Santoso',
-      'rating': 4,
-      'comment': 'Lokasi strategis, dekat mall dan tempat wisata.',
-      'date': '1 minggu lalu',
-    },
-  ];
+  Widget _buildUlasan() {
+    final reviews = [
+      {
+        'name': 'John Dey',
+        'rating': 5,
+        'comment': 'Kamar bersih dan nyaman, pelayanan sangat baik!',
+        'date': '10 bulan lalu',
+      },
+      {
+        'name': 'Budi Santoso',
+        'rating': 4,
+        'comment': 'Lokasi strategis, dekat mall dan tempat wisata.',
+        'date': '1 minggu lalu',
+      },
+    ];
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // HEADER
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Ulasan',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'InclusiveSans',
-            ),
-          ),
-
-          TextButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const WriteReviewScreen(),
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.edit_outlined,
-              color: Color(0xFFF1510C),
-              size: 18,
-            ),
-            label: const Text(
-              'Tulis Ulasan',
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Ulasan',
               style: TextStyle(
-                color: Color(0xFFF1510C),
-                fontWeight: FontWeight.w600,
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
                 fontFamily: 'InclusiveSans',
               ),
             ),
-          ),
-        ],
-      ),
-
-      const SizedBox(height: 14),
-
-      // SEARCH
-      Container(
-        height: 46,
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF5F1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const TextField(
-          decoration: InputDecoration(
-            hintText: 'Cari Ulasan',
-            prefixIcon: Icon(
-              Icons.search,
-              color: Color(0xFFF1510C),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const WriteReviewScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.edit_outlined,
+                color: Color(0xFFF1510C),
+                size: 18,
+              ),
+              label: const Text(
+                'Tulis Ulasan',
+                style: TextStyle(
+                  color: Color(0xFFF1510C),
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'InclusiveSans',
+                ),
+              ),
             ),
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.only(top: 12),
-          ),
-        ),
-      ),
-
-      const SizedBox(height: 14),
-
-      // FILTER
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _buildFilterChip('Filter'),
-            _buildFilterChip('Terverifikasi'),
-            _buildFilterChip('Terbaru'),
-            _buildFilterChip('Dengan Foto'),
           ],
         ),
-      ),
 
-      const SizedBox(height: 18),
+        const SizedBox(height: 14),
 
-      // REVIEW LIST
-      ...reviews.map((r) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 14),
+        Container(
+          height: 46,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF5F1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const TextField(
+            decoration: InputDecoration(
+              hintText: 'Cari Ulasan',
+              prefixIcon: Icon(
+                Icons.search,
+                color: Color(0xFFF1510C),
+              ),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 12),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 14),
+
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 22,
-                backgroundColor:
-                    const Color(0xFFF1510C).withOpacity(0.15),
-                child: Text(
-                  (r['name'] as String)[0],
-                  style: const TextStyle(
-                    color: Color(0xFFF1510C),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: 12),
-
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          r['name'] as String,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'InclusiveSans',
-                            fontSize: 14,
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        Text(
-                          r['date'] as String,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 4),
-
-                    Row(
-                      children: List.generate(
-                        5,
-                        (i) => Icon(
-                          Icons.star,
-                          size: 14,
-                          color: i < (r['rating'] as int)
-                              ? Colors.amber
-                              : Colors.grey.shade300,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      r['comment'] as String,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        height: 1.5,
-                        color: Colors.black87,
-                        fontFamily: 'InclusiveSans',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildFilterChip('Filter'),
+              _buildFilterChip('Terverifikasi'),
+              _buildFilterChip('Terbaru'),
+              _buildFilterChip('Dengan Foto'),
             ],
           ),
-        );
-      }),
+        ),
 
-      const SizedBox(height: 20),
-    ],
-  );
-}
+        const SizedBox(height: 18),
 
-Widget _buildFilterChip(String text) {
-  return Container(
-    margin: const EdgeInsets.only(right: 10),
-    padding: const EdgeInsets.symmetric(
-      horizontal: 14,
-      vertical: 8,
-    ),
-    decoration: BoxDecoration(
-      color: text == 'Terverifikasi'
-          ? const Color(0xFFF1510C)
-          : const Color(0xFFF3F3F3),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Text(
-      text,
-      style: TextStyle(
-        color: text == 'Terverifikasi'
-            ? Colors.white
-            : Colors.black87,
-        fontSize: 11,
-        fontWeight: FontWeight.w600,
-        fontFamily: 'InclusiveSans',
+        ...reviews.map((r) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: const Color(0xFFF1510C).withValues(alpha: 0.15),
+                  child: Text(
+                    (r['name'] as String)[0],
+                    style: const TextStyle(
+                      color: Color(0xFFF1510C),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            r['name'] as String,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'InclusiveSans',
+                              fontSize: 14,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            r['date'] as String,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: List.generate(
+                          5,
+                          (i) => Icon(
+                            Icons.star,
+                            size: 14,
+                            color: i < (r['rating'] as int)
+                                ? Colors.amber
+                                : Colors.grey.shade300,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        r['comment'] as String,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          height: 1.5,
+                          color: Colors.black87,
+                          fontFamily: 'InclusiveSans',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildFilterChip(String text) {
+    return Container(
+      margin: const EdgeInsets.only(right: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 8,
       ),
-    ),
-  );
+      decoration: BoxDecoration(
+        color: text == 'Terverifikasi'
+            ? const Color(0xFFF1510C)
+            : const Color(0xFFF3F3F3),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: text == 'Terverifikasi'
+              ? Colors.white
+              : Colors.black87,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'InclusiveSans',
+        ),
+      ),
+    );
+  }
 }
-    } 

@@ -78,7 +78,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Text(
@@ -158,7 +157,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -166,7 +165,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       ),
       child: Row(
         children: [
-          // Gambar
           Stack(
             children: [
               ClipRRect(
@@ -187,7 +185,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                   ),
                 ),
               ),
-              // Tombol hapus favorit
               Positioned(
                 top: 8,
                 left: 8,
@@ -215,7 +212,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               ),
             ],
           ),
-          // Info
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -334,7 +330,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
