@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'explore_screen.dart';
 import 'favorite_screen.dart';
 import 'profile_screen.dart';
+import 'detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -233,9 +234,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRekomendasiCard(Map<String, dynamic> hotel, int index) {
-    return Container(
-      width: 170,
-      margin: const EdgeInsets.only(right: 14),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => DetailScreen(hotel: hotel)),
+      ),
+      child: Container(
+        width: 170,
+        margin: const EdgeInsets.only(right: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -319,6 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    ),
     );
   }
 
