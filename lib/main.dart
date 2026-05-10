@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/splash_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,10 +19,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      title: 'Booking Hotel',
+      theme: ThemeData(
+        fontFamily: 'InclusiveSans',
+        primaryColor: const Color(0xFFF1510C),
+        useMaterial3: true,
+      ),
+      home: StreamBuilder<User?>(
+        stream: Supabase.instance.client.auth.onAuthStateChange.map((event) => event.session?.user),
+        initialData: Supabase.instance.client.auth.currentUser,
+        builder: (context, snapshot) {
+          final user = snapshot.data;
+          
+          if (user != null) {
+            return const HomeScreen();
+          } else {
+            return const SplashScreen();
+          }
+        },
+      ),
     );
   }
 }
-

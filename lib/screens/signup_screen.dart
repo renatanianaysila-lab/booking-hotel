@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'verification_screen.dart';
+import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -12,7 +14,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
   bool _agreeToTerms = false;
 
   @override
@@ -20,22 +26,157 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleSignUp() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (name.isEmpty) {
+      _showSnackbar('Nama lengkap tidak boleh kosong');
+      return;
+    }
+
+    if (email.isEmpty) {
+      _showSnackbar('Email tidak boleh kosong');
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
+      _showSnackbar('Format email tidak valid');
+      return;
+    }
+
+    if (password.isEmpty) {
+      _showSnackbar('Kata sandi tidak boleh kosong');
+      return;
+    }
+
+    if (password.length < 6) {
+      _showSnackbar('Kata sandi minimal 6 karakter');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showSnackbar('Konfirmasi kata sandi tidak cocok');
+      return;
+    }
+
+    if (!_agreeToTerms) {
+      _showSnackbar('Anda harus menyetujui syarat dan ketentuan');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
+        password: password,
+        data: {
+          'full_name': name,
+          'created_at': DateTime.now().toIso8601String(),
+        },
+      );
+
+      if (response.user != null && mounted) {
+        await Supabase.instance.client.auth.resend(
+          type: OtpType.signup,
+          email: email,
+        );
+        
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerificationScreen(
+                email: email,
+              ),
+            ),
+          );
+        }
+      }
+    } on AuthException catch (e) {
+      String errorMessage = _getErrorMessage(e.message);
+      if (mounted) {
+        _showSnackbar(errorMessage);
+      }
+    } catch (e) {
+      if (mounted) {
+        _showSnackbar('Terjadi kesalahan: ${e.toString()}');
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  String _getErrorMessage(String message) {
+    final msg = message.toLowerCase();
+    if (msg.contains('user already registered')) {
+      return 'Email sudah terdaftar. Silakan login atau gunakan email lain.';
+    } else if (msg.contains('password should be at least 6 characters')) {
+      return 'Kata sandi minimal 6 karakter';
+    } else if (msg.contains('invalid email')) {
+      return 'Format email tidak valid';
+    } else if (msg.contains('network')) {
+      return 'Gagal terhubung ke server. Periksa koneksi internet Anda.';
+    }
+    return message;
+  }
+
+  void _showSnackbar(String message, {bool isError = true}) {
+    if (!mounted) return;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(fontFamily: 'InclusiveSans'),
+        ),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        duration: const Duration(seconds: 3),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFFF1510C)),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Center(
                 child: Text(
-                  'Buat Akun',
+                  'Daftar Akun',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
@@ -46,138 +187,239 @@ class _SignUpScreenState extends State<SignUpScreen> {
               const SizedBox(height: 8),
               Center(
                 child: Text(
-                  'Isi data di bawah, atau daftar\ndengan akun media sosial',
+                  'Buat akun baru untuk memulai',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 16,
                     color: Colors.grey[600],
                     fontFamily: 'InclusiveSans',
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 36),
-
-              // Nama
-              const Text('Nama', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'InclusiveSans')),
+              const SizedBox(height: 32),
+              
+              const Text(
+                'Nama Lengkap',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'InclusiveSans',
+                ),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _nameController,
-                keyboardType: TextInputType.name,
-                decoration: _inputDecoration('Nama'),
+                textInputAction: TextInputAction.next,
+                decoration: _buildInputDecoration(
+                  hintText: 'Masukkan nama lengkap Anda',
+                  prefixIcon: Icons.person_outline,
+                ),
                 style: const TextStyle(fontFamily: 'InclusiveSans'),
               ),
               const SizedBox(height: 20),
-
-              // Email
-              const Text('Email', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'InclusiveSans')),
+              
+              const Text(
+                'Email',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'InclusiveSans',
+                ),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: _inputDecoration('nama@example.com'),
+                textInputAction: TextInputAction.next,
+                decoration: _buildInputDecoration(
+                  hintText: 'nama@example.com',
+                  prefixIcon: Icons.email_outlined,
+                ),
                 style: const TextStyle(fontFamily: 'InclusiveSans'),
               ),
               const SizedBox(height: 20),
-
-              // Kata Sandi
-              const Text('Kata Sandi', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, fontFamily: 'InclusiveSans')),
+              
+              const Text(
+                'Kata Sandi',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'InclusiveSans',
+                ),
+              ),
               const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
-                decoration: _inputDecoration('********').copyWith(
+                textInputAction: TextInputAction.next,
+                decoration: _buildInputDecoration(
+                  hintText: 'Minimal 6 karakter',
+                  prefixIcon: Icons.lock_outline,
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
+                ),
+                style: const TextStyle(fontFamily: 'InclusiveSans'),
+              ),
+              const SizedBox(height: 20),
+              
+              const Text(
+                'Konfirmasi Kata Sandi',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'InclusiveSans',
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _confirmPasswordController,
+                obscureText: _obscureConfirmPassword,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _handleSignUp(),
+                decoration: _buildInputDecoration(
+                  hintText: 'Ketik ulang kata sandi Anda',
+                  prefixIcon: Icons.lock_outline,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
                   ),
                 ),
                 style: const TextStyle(fontFamily: 'InclusiveSans'),
               ),
               const SizedBox(height: 16),
-
-              // Checkbox
+              
               Row(
                 children: [
                   Checkbox(
                     value: _agreeToTerms,
-                    onChanged: (value) => setState(() => _agreeToTerms = value ?? false),
+                    onChanged: (value) {
+                      setState(() {
+                        _agreeToTerms = value ?? false;
+                      });
+                    },
                     activeColor: const Color(0xFFF1510C),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    checkColor: Colors.white,
                   ),
                   Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                        style: TextStyle(fontSize: 13, color: Colors.grey[700], fontFamily: 'InclusiveSans'),
-                        children: [
-                          const TextSpan(text: 'Setuju dengan '),
-                          WidgetSpan(
-                            child: GestureDetector(
-                              onTap: () => _showSnackbar('Syarat & Ketentuan akan segera hadir'),
-                              child: const Text(
-                                'Syarat & Ketentuan',
-                                style: TextStyle(fontSize: 13, color: Color(0xFFF1510C), fontFamily: 'InclusiveSans', fontWeight: FontWeight.w500),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _agreeToTerms = !_agreeToTerms;
+                        });
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey[600],
+                            fontFamily: 'InclusiveSans',
+                          ),
+                          children: [
+                            const TextSpan(text: 'Dengan mendaftar, Anda menyetujui '),
+                            TextSpan(
+                              text: 'Syarat & Ketentuan',
+                              style: const TextStyle(
+                                color: Color(0xFFF1510C),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ),
-                        ],
+                            const TextSpan(text: ' dan '),
+                            TextSpan(
+                              text: 'Kebijakan Privasi',
+                              style: const TextStyle(
+                                color: Color(0xFFF1510C),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const TextSpan(text: ' kami.'),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
-
-              // Daftar Button
+              
               SizedBox(
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: _handleRegister,
+                  onPressed: _isLoading ? null : _handleSignUp,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF1510C),
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     elevation: 0,
+                    disabledBackgroundColor: Colors.grey[400],
                   ),
-                  child: const Text('Daftar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'InclusiveSans')),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'Daftar',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'InclusiveSans',
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 24),
-
-              // OR Divider
+              
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(child: Divider(color: Colors.grey[300])),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Atau masuk dengan', style: TextStyle(color: Colors.grey[600], fontFamily: 'InclusiveSans', fontSize: 13)),
+                  Text(
+                    'Sudah punya akun?',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontFamily: 'InclusiveSans',
+                    ),
                   ),
-                  Expanded(child: Divider(color: Colors.grey[300])),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              // Social Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildSocialButton('assets/google.png', 'Google'),
-                  const SizedBox(width: 20),
-                  _buildSocialButton('assets/facebook.png', 'Facebook'),
-                  const SizedBox(width: 20),
-                  _buildSocialButton('assets/apple.png', 'Apple'),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // Login Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Sudah punya akun ?', style: TextStyle(color: Colors.grey[600], fontFamily: 'InclusiveSans')),
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Masuk', style: TextStyle(color: Color(0xFFF1510C), fontWeight: FontWeight.bold, fontFamily: 'InclusiveSans')),
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          },
+                    child: const Text(
+                      'Masuk',
+                      style: TextStyle(
+                        color: Color(0xFFF1510C),
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'InclusiveSans',
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -188,70 +430,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  InputDecoration _inputDecoration(String hint) {
+  InputDecoration _buildInputDecoration({
+    required String hintText,
+    IconData? prefixIcon,
+    Widget? suffixIcon,
+  }) {
     return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(fontFamily: 'InclusiveSans', color: Colors.grey[400]),
+      hintText: hintText,
+      hintStyle: TextStyle(
+        fontFamily: 'InclusiveSans',
+        color: Colors.grey[400],
+      ),
+      prefixIcon: prefixIcon != null
+          ? Icon(prefixIcon, color: Colors.grey[400], size: 20)
+          : null,
+      suffixIcon: suffixIcon,
       filled: true,
       fillColor: const Color(0xFFFFF3EE),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFF1510C), width: 2)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Color(0xFFF1510C), width: 2),
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-    );
-  }
-
-  Widget _buildSocialButton(String assetPath, String label) {
-    return InkWell(
-      onTap: () => _showSnackbar('Daftar dengan $label akan segera hadir'),
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(30)),
-        child: Image.asset(
-          assetPath,
-          height: 28,
-          width: 28,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              height: 28,
-              width: 28,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey.shade200),
-              child: Center(child: Text(label[0], style: const TextStyle(fontWeight: FontWeight.bold))),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  void _handleRegister() {
-    String name = _nameController.text.trim();
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
-
-    if (name.isEmpty) { _showSnackbar('Nama tidak boleh kosong'); return; }
-    if (email.isEmpty) { _showSnackbar('Email tidak boleh kosong'); return; }
-    if (!email.contains('@') || !email.contains('.')) { _showSnackbar('Email tidak valid'); return; }
-    if (password.isEmpty) { _showSnackbar('Kata sandi tidak boleh kosong'); return; }
-    if (password.length < 6) { _showSnackbar('Kata sandi minimal 6 karakter'); return; }
-    if (!_agreeToTerms) { _showSnackbar('Harap setujui Syarat & Ketentuan terlebih dahulu'); return; }
-
-    // Navigasi ke VerificationScreen dengan membawa email
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => VerificationScreen(email: email),
-      ),
-    );
-  }
-
-  void _showSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: const TextStyle(fontFamily: 'InclusiveSans')),
-        duration: const Duration(seconds: 2),
-      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'home_screen.dart';
 import 'explore_screen.dart';
 import 'favorite_screen.dart';
@@ -22,15 +23,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'totalBooking': 5,
   };
 
-  void _logout() async {
-    if (!mounted) return;
-    Navigator.of(context).pop();
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (Route<dynamic> route) => false,
-    );
+  Future<void> _logout() async {
+    try {
+      await Supabase.instance.client.auth.signOut();
+      
+      if (!mounted) return;
+      
+      // Langsung navigasi ke LoginScreen dan hapus semua route
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal logout'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -187,7 +199,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.of(dialogContext).pop(),
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                            },
                             child: const Text(
                               'Batal',
                               style: TextStyle(
@@ -197,7 +211,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: _logout,
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                              _logout();
+                            },
                             child: const Text(
                               'Keluar',
                               style: TextStyle(

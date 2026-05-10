@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'welcome_screen.dart';
+import 'home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,14 +14,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-        );
-      }
-    });
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    await Future.delayed(const Duration(seconds: 2));
+    
+    if (!mounted) return;
+    
+    final user = Supabase.instance.client.auth.currentUser;
+    
+    if (user != null) {
+      // Sudah login, langsung ke HomeScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      // Belum login, ke WelcomeScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+      );
+    }
   }
 
   @override
@@ -60,6 +77,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Colors.white,
                   fontFamily: 'InclusiveSans', 
                 ),
+              ),
+              const SizedBox(height: 24),
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             ],
           ),
