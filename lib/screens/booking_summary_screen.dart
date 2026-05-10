@@ -17,6 +17,18 @@ class BookingSummaryScreen extends StatelessWidget {
     this.notes = '',
   });
 
+int _parseHarga(String price) {
+  final clean = price.replaceAll(RegExp(r'[Rp\s.]'), '').toLowerCase();
+  if (clean.contains('jt')) {
+    final num = double.tryParse(clean.replaceAll('jt', '').replaceAll(',', '.')) ?? 0;
+    return (num * 1000000).round();
+  } else if (clean.contains('rb')) {
+    final num = double.tryParse(clean.replaceAll('rb', '').replaceAll(',', '.')) ?? 0;
+    return (num * 1000).round();
+  }
+  return int.tryParse(clean) ?? 850000;
+}
+
   String _formatRupiah(int amount) {
     final s = amount.toString();
     final buf = StringBuffer();
@@ -29,9 +41,9 @@ class BookingSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const int basePrice = 850000;
-    const int tax = 150000;
-    const int total = basePrice + tax;
+   int basePrice = _parseHarga(hotel['price'] ?? 'Rp850rb');
+int tax = (basePrice * 0.18).round();
+int total = basePrice + tax;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -135,8 +147,8 @@ class BookingSummaryScreen extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    const Text(
-                                      'Diskon 20%',
+                                    Text(
+  hotel['discount'] ?? 'Diskon 20%',
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: Color(0xFFF1510C),
