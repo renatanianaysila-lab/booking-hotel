@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'write_review_screen.dart';
-import 'booking_screen.dart';
+import 'select_guest_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   final Map<String, dynamic> hotel;
@@ -49,6 +49,7 @@ class _DetailScreenState extends State<DetailScreen>
           SingleChildScrollView(
             child: Column(
               children: [
+                // ── Hero Image ──────────────────────────────────────
                 Stack(
                   children: [
                     SizedBox(
@@ -75,13 +76,14 @@ class _DetailScreenState extends State<DetailScreen>
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Colors.black.withValues(alpha: 0.4),
+                              Colors.black.withOpacity(0.4),
                               Colors.transparent,
                             ],
                           ),
                         ),
                       ),
                     ),
+                    // Back button
                     Positioned(
                       top: 44,
                       left: 16,
@@ -95,7 +97,7 @@ class _DetailScreenState extends State<DetailScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
+                                color: Colors.black.withOpacity(0.15),
                                 blurRadius: 6,
                               ),
                             ],
@@ -105,6 +107,7 @@ class _DetailScreenState extends State<DetailScreen>
                         ),
                       ),
                     ),
+                    // Favorite button
                     Positioned(
                       top: 44,
                       right: 16,
@@ -119,7 +122,7 @@ class _DetailScreenState extends State<DetailScreen>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.15),
+                                color: Colors.black.withOpacity(0.15),
                                 blurRadius: 6,
                               ),
                             ],
@@ -139,6 +142,7 @@ class _DetailScreenState extends State<DetailScreen>
                   ],
                 ),
 
+                // ── Thumbnail Gallery ────────────────────────────────
                 Container(
                   color: Colors.white,
                   padding:
@@ -185,11 +189,13 @@ class _DetailScreenState extends State<DetailScreen>
                   ),
                 ),
 
+                // ── Hotel Info ──────────────────────────────────────
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Diskon + Rating
                       Row(
                         children: [
                           Container(
@@ -225,6 +231,7 @@ class _DetailScreenState extends State<DetailScreen>
                       ),
                       const SizedBox(height: 8),
 
+                      // Name + Vector icon
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -266,6 +273,7 @@ class _DetailScreenState extends State<DetailScreen>
                         ],
                       ),
 
+                      // Location
                       Row(
                         children: [
                           const Icon(Icons.location_on,
@@ -284,6 +292,7 @@ class _DetailScreenState extends State<DetailScreen>
 
                       const SizedBox(height: 12),
 
+                      // ── Tab Bar ──────────────────────────────────
                       TabBar(
                         controller: _tabController,
                         labelColor: const Color(0xFFF1510C),
@@ -309,6 +318,7 @@ class _DetailScreenState extends State<DetailScreen>
 
                       const SizedBox(height: 16),
 
+                      // ── Tab Content ──────────────────────────────
                       AnimatedBuilder(
                         animation: _tabController,
                         builder: (context, _) {
@@ -333,6 +343,7 @@ class _DetailScreenState extends State<DetailScreen>
             ),
           ),
 
+          // ── Bottom Bar ──────────────────────────────────────────
           Positioned(
             bottom: 0,
             left: 0,
@@ -343,7 +354,7 @@ class _DetailScreenState extends State<DetailScreen>
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: Colors.black.withOpacity(0.1),
                     blurRadius: 12,
                     offset: const Offset(0, -3),
                   ),
@@ -391,14 +402,14 @@ class _DetailScreenState extends State<DetailScreen>
                   const SizedBox(width: 16),
                   Expanded(
                     child: GestureDetector(
-                     onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => BookingScreen(hotel: widget.hotel),
-    ),
-  );
-},
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => SelectGuestSheet(hotel: widget.hotel),
+                        );
+                      },
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
@@ -443,7 +454,9 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
+  // ── Tab: Tentang ──────────────────────────────────────────────────
   Widget _buildTentang(Map<String, dynamic> hotel) {
+    // Setiap fasilitas pakai icon asset yang sesuai
     final facilities = [
       {
         'icon': 'assets/material-symbols_bed.png',
@@ -480,6 +493,7 @@ class _DetailScreenState extends State<DetailScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Fasilitas grid 3 kolom
         GridView.count(
           crossAxisCount: 3,
           shrinkWrap: true,
@@ -492,6 +506,7 @@ class _DetailScreenState extends State<DetailScreen>
 
         const SizedBox(height: 20),
 
+        // Deskripsi
         const Text(
           'Deskripsi',
           style: TextStyle(
@@ -554,6 +569,7 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
+  // ── Tab: Galeri ───────────────────────────────────────────────────
   Widget _buildGaleri() {
     return GridView.count(
       crossAxisCount: 2,
@@ -578,6 +594,7 @@ class _DetailScreenState extends State<DetailScreen>
     );
   }
 
+  // ── Tab: Ulasan ───────────────────────────────────────────────────
   Widget _buildUlasan() {
     final reviews = [
       {
@@ -597,6 +614,7 @@ class _DetailScreenState extends State<DetailScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // HEADER
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -608,6 +626,7 @@ class _DetailScreenState extends State<DetailScreen>
                 fontFamily: 'InclusiveSans',
               ),
             ),
+
             TextButton.icon(
               onPressed: () {
                 Navigator.push(
@@ -636,6 +655,7 @@ class _DetailScreenState extends State<DetailScreen>
 
         const SizedBox(height: 14),
 
+        // SEARCH
         Container(
           height: 46,
           decoration: BoxDecoration(
@@ -657,6 +677,7 @@ class _DetailScreenState extends State<DetailScreen>
 
         const SizedBox(height: 14),
 
+        // FILTER
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -671,6 +692,7 @@ class _DetailScreenState extends State<DetailScreen>
 
         const SizedBox(height: 18),
 
+        // REVIEW LIST
         ...reviews.map((r) {
           return Container(
             margin: const EdgeInsets.only(bottom: 14),
@@ -679,7 +701,8 @@ class _DetailScreenState extends State<DetailScreen>
               children: [
                 CircleAvatar(
                   radius: 22,
-                  backgroundColor: const Color(0xFFF1510C).withValues(alpha: 0.15),
+                  backgroundColor:
+                      const Color(0xFFF1510C).withOpacity(0.15),
                   child: Text(
                     (r['name'] as String)[0],
                     style: const TextStyle(
@@ -688,7 +711,9 @@ class _DetailScreenState extends State<DetailScreen>
                     ),
                   ),
                 ),
+
                 const SizedBox(width: 12),
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,7 +728,9 @@ class _DetailScreenState extends State<DetailScreen>
                               fontSize: 14,
                             ),
                           ),
+
                           const Spacer(),
+
                           Text(
                             r['date'] as String,
                             style: const TextStyle(
@@ -713,7 +740,9 @@ class _DetailScreenState extends State<DetailScreen>
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 4),
+
                       Row(
                         children: List.generate(
                           5,
@@ -726,7 +755,9 @@ class _DetailScreenState extends State<DetailScreen>
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 8),
+
                       Text(
                         r['comment'] as String,
                         style: const TextStyle(
