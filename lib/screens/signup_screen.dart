@@ -30,6 +30,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  // Fungsi untuk generate email unik untuk testing
+  String _generateUniqueEmail() {
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    return 'user$timestamp@example.com';
+  }
+
   Future<void> _handleSignUp() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
@@ -43,11 +49,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (email.isEmpty) {
       _showSnackbar('Email tidak boleh kosong');
-      return;
-    }
-
-    if (!_isValidEmail(email)) {
-      _showSnackbar('Format email tidak valid');
       return;
     }
 
@@ -86,10 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if (response.user != null && mounted) {
-        await Supabase.instance.client.auth.resend(
-          type: OtpType.signup,
-          email: email,
-        );
+        _showSnackbar('Berhasil! Cek email untuk verifikasi', isError: false);
         
         if (mounted) {
           Navigator.push(
@@ -104,13 +102,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } on AuthException catch (e) {
       String errorMessage = _getErrorMessage(e.message);
-      if (mounted) {
-        _showSnackbar(errorMessage);
+      _showSnackbar(errorMessage);
+      
+      // Jika rate limit, kasih saran pake email auto-generate
+      if (e.message.toLowerCase().contains('rate limit') || 
+          e.message.toLowerCase().contains('security')) {
+        _showRateLimitDialog();
       }
     } catch (e) {
-      if (mounted) {
-        _showSnackbar('Terjadi kesalahan: ${e.toString()}');
-      }
+      _showSnackbar('Terjadi kesalahan: ${e.toString()}');
     } finally {
       if (mounted) {
         setState(() {
@@ -120,22 +120,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  bool _isValidEmail(String email) {
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    return emailRegex.hasMatch(email);
+  void _showRateLimitDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Terlalu Banyak Percobaan'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Kamu sudah terlalu sering mencoba daftar.'),
+            const SizedBox(height: 16),
+            const Text('Solusi:'),
+            const SizedBox(height: 8),
+            const Text('1. Tunggu 1-2 menit'),
+            const Text('2. Gunakan email yang benar-benar baru'),
+            const SizedBox(height: 16),
+            const Text('Atau klik tombol di bawah untuk generate email otomatis:'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Tunggu Sebentar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final uniqueEmail = _generateUniqueEmail();
+              _emailController.text = uniqueEmail;
+              Navigator.pop(context);
+              _showSnackbar('Email otomatis: $uniqueEmail', isError: false);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF1510C),
+            ),
+            child: const Text('Generate Email Baru'),
+          ),
+        ],
+      ),
+    );
   }
 
   String _getErrorMessage(String message) {
     final msg = message.toLowerCase();
+    
     if (msg.contains('user already registered')) {
       return 'Email sudah terdaftar. Silakan login atau gunakan email lain.';
-    } else if (msg.contains('password should be at least 6 characters')) {
+    } 
+    else if (msg.contains('password should be at least 6 characters')) {
       return 'Kata sandi minimal 6 karakter';
-    } else if (msg.contains('invalid email')) {
-      return 'Format email tidak valid';
-    } else if (msg.contains('network')) {
+    } 
+    else if (msg.contains('invalid email')) {
+      return 'Format email tidak valid. Contoh: nama@gmail.com';
+    } 
+    else if (msg.contains('network')) {
       return 'Gagal terhubung ke server. Periksa koneksi internet Anda.';
     }
+    else if (msg.contains('rate limit') || msg.contains('security') || msg.contains('wait')) {
+      return 'Terlalu banyak percobaan. Tunggu 1-2 menit atau gunakan email baru.';
+    }
+    
     return message;
   }
 
@@ -149,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           style: const TextStyle(fontFamily: 'InclusiveSans'),
         ),
         backgroundColor: isError ? Colors.red : Colors.green,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
       ),
@@ -226,15 +270,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                decoration: _buildInputDecoration(
-                  hintText: 'nama@example.com',
-                  prefixIcon: Icons.email_outlined,
-                ),
-                style: const TextStyle(fontFamily: 'InclusiveSans'),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      decoration: _buildInputDecoration(
+                        hintText: 'nama@gmail.com',
+                        prefixIcon: Icons.email_outlined,
+                      ),
+                      style: const TextStyle(fontFamily: 'InclusiveSans'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final uniqueEmail = _generateUniqueEmail();
+                        _emailController.text = uniqueEmail;
+                        _showSnackbar('Email terisi: $uniqueEmail', isError: false);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        foregroundColor: const Color(0xFFF1510C),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Auto'),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 20),
               

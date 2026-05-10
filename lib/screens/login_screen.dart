@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'signup_screen.dart';
 import 'home_screen.dart';
-import 'forgot_password_screen.dart';
-
-// Tambahkan import untuk logging
-import 'dart:developer' as developer;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,38 +15,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkAlreadyLoggedIn();
-  }
-
-  Future<void> _checkAlreadyLoggedIn() async {
-    try {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user != null && mounted) {
-        // Cek apakah email sudah diverifikasi
-        if (user.emailConfirmedAt != null) {
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          }
-        }
-      }
-    } catch (e) {
-      // Ganti print dengan logging
-      developer.log('Error checking login status', error: e);
-    }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  // DUMMY CREDENTIALS
+  final String _dummyEmail = 'naysila@gmail.com';
+  final String _dummyPassword = '12345678';
 
   Future<void> _handleLogin() async {
     final email = _emailController.text.trim();
@@ -67,96 +33,33 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // Validasi format email sederhana
-    if (!email.contains('@') || !email.contains('.')) {
-      _showSnackbar('Format email tidak valid');
-      return;
-    }
-
     setState(() {
       _isLoading = true;
     });
 
-    try {
-      final response = await Supabase.instance.client.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
+    // Simulasi delay login
+    await Future.delayed(const Duration(seconds: 1));
 
-      if (response.user != null && mounted) {
-        // Cek apakah email sudah diverifikasi
-        final user = response.user;
-        if (user?.emailConfirmedAt == null) {
-          // Email belum diverifikasi
-          _showSnackbar(
-            'Email belum diverifikasi. Silakan cek email Anda untuk verifikasi.',
-            isError: true,
-            duration: 5, // Lebih lama untuk pesan penting
-          );
-          
-          // Kirim ulang email verifikasi
-          await Supabase.instance.client.auth.resend(
-            type: OtpType.signup,
-            email: email,
-          );
-          
-          if (mounted) {
-            setState(() {
-              _isLoading = false;
-            });
-          }
-          return;
-        }
-        
-        _showSnackbar('Login berhasil!', isError: false, duration: 2);
-        
-        // Hapus semua route dan pergi ke HomeScreen
-        if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
-            (route) => false,
-          );
-        }
-      }
-    } on AuthException catch (e) {
-      String errorMessage = _getErrorMessage(e.message);
-      _showSnackbar(errorMessage, duration: 4);
-      // Log error untuk debugging
-      developer.log('Auth Exception: ${e.message}', name: 'LoginScreen');
-    } catch (e) {
-      _showSnackbar('Terjadi kesalahan: ${e.toString()}', duration: 4);
-      developer.log('Login error', error: e, name: 'LoginScreen');
-    } finally {
+    // CEK DUMMY CREDENTIALS
+    if (email == _dummyEmail && password == _dummyPassword) {
+      _showSnackbar('Login berhasil! Selamat datang Naysila', isError: false);
+      
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
+        );
       }
+    } else {
+      _showSnackbar('Email atau kata sandi salah! Gunakan: naysila@gmail.com / 12345678');
     }
-  }
 
-  String _getErrorMessage(String message) {
-    final msg = message.toLowerCase();
-    if (msg.contains('invalid login credentials')) {
-      return 'Email atau kata sandi salah. Periksa kembali data Anda.';
-    } else if (msg.contains('email not confirmed')) {
-      return 'Email belum diverifikasi. Cek email Anda untuk verifikasi.';
-    } else if (msg.contains('user not found')) {
-      return 'Email tidak terdaftar. Silakan daftar terlebih dahulu.';
-    } else if (msg.contains('password should be at least 6 characters')) {
-      return 'Kata sandi minimal 6 karakter';
-    } else if (msg.contains('network')) {
-      return 'Gagal terhubung ke server. Periksa koneksi internet Anda.';
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    return message;
-  }
-
-  Future<void> _forgotPassword() async {
-    // Navigate to forgot password screen instead of handling here
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
-    );
   }
 
   void _showSnackbar(String message, {bool isError = true, int duration = 3}) {
@@ -232,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'nama@example.com',
+                  hintText: 'nama@gmail.com',
                   hintStyle: TextStyle(
                     fontFamily: 'InclusiveSans',
                     color: Colors.grey[400],
@@ -309,7 +212,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: _isLoading ? null : _forgotPassword,
+                  onPressed: _isLoading ? null : () {
+                    _showSnackbar('Fitur lupa password akan segera hadir');
+                  },
                   child: const Text(
                     'Lupa Kata Sandi ?',
                     style: TextStyle(
