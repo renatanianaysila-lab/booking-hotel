@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'naysila@gmail.com',
+                  hintText: 'nama@gmail.com',
                   hintStyle: TextStyle(
                     fontFamily: 'InclusiveSans',
                     color: Colors.grey[400],
