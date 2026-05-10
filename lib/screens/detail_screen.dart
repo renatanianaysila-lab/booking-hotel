@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'write_review_screen.dart';
+import 'booking_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   final Map<String, dynamic> hotel;
@@ -390,14 +391,14 @@ class _DetailScreenState extends State<DetailScreen>
                   const SizedBox(width: 16),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Fitur pemesanan segera hadir!'),
-                            backgroundColor: Color(0xFFF1510C),
-                          ),
-                        );
-                      },
+                     onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => BookingScreen(hotel: widget.hotel),
+    ),
+  );
+},
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
