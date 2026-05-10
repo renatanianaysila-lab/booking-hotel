@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
 import 'home_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isLoading = false;
 
-  // DUMMY CREDENTIALS
   final String _dummyEmail = 'naysila@gmail.com';
   final String _dummyPassword = '12345678';
 
@@ -37,10 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    // Simulasi delay login
     await Future.delayed(const Duration(seconds: 1));
 
-    // CEK DUMMY CREDENTIALS
     if (email == _dummyEmail && password == _dummyPassword) {
       _showSnackbar('Login berhasil! Selamat datang Naysila', isError: false);
       
@@ -135,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'nama@gmail.com',
+                  hintText: 'naysila@gmail.com',
                   hintStyle: TextStyle(
                     fontFamily: 'InclusiveSans',
                     color: Colors.grey[400],
@@ -213,7 +211,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: _isLoading ? null : () {
-                    _showSnackbar('Fitur lupa password akan segera hadir');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ForgotPasswordScreen(),
+                      ),
+                    );
                   },
                   child: const Text(
                     'Lupa Kata Sandi ?',
