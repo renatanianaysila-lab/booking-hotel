@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'explore_screen.dart';
 import 'favorite_screen.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,6 +21,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'joinDate': 'Mei 2026',
     'totalBooking': 5,
   };
+
+  void _logout() async {
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (Route<dynamic> route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,9 +169,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (_) => AlertDialog(
+                      barrierDismissible: false,
+                      builder: (BuildContext dialogContext) => AlertDialog(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         title: const Text(
                           'Keluar',
                           style: TextStyle(
@@ -173,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.of(dialogContext).pop(),
                             child: const Text(
                               'Batal',
                               style: TextStyle(
@@ -183,9 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            onPressed: _logout,
                             child: const Text(
                               'Keluar',
                               style: TextStyle(
